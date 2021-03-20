@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "orders")
 @Getter @Setter
 public class Order {
     @Id @GeneratedValue
@@ -17,11 +17,11 @@ public class Order {
     private Long id;
 
     // 여러 회원들이 하나의 주문에 접근
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "delivery_id")
@@ -33,4 +33,20 @@ public class Order {
     // 주문상태 [ORDER, CANCEL]
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    // 연관관계 메서드
+//    public void setMember(Member member) {
+//        this.member = member;
+//        member.getOrders().add(this);
+//    }
+//
+//    public void addOrderItem(OrderItem orderItem) {
+//        orderItem.add(orderItem);
+//        orderItem.setOrder(this);
+//    }
+//
+//    public void setDelivery(Delivery delivery) {
+//        this.delivery = delivery;
+//        delivery.setOrder(this);
+//    }
 }
