@@ -25,7 +25,7 @@ public class Category {
     private List<Item> items = new ArrayList<>();
     
     // 부모-자식 연관관계 만드는 법
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
 
