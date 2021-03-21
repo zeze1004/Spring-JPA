@@ -1,5 +1,6 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,16 @@ public class ItemService {
     // 찾기
     public Item findOne(Long itemId) {
         return itemRepository.findOne(itemId);
+    }
+
+    // 조회 로직
+
+    // 전체 주문 가격 조회
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
     }
 }

@@ -51,4 +51,33 @@ public class Order {
         this.delivery = delivery;
         delivery.setOrder(this);
     }
+
+    // 생성 메서드
+
+    // 주문 엔티티를 생성할 때 사용
+    // 주문 회원, 배송정보, 주문상품의 정보를 받아 실제 주문 엔티티 생성
+    public static Order createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Order order = new Order();
+        order.setMember(member);
+        order.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+            order.addOrderItem(orderItem);
+        }
+        order.setStatus(OrderStatus.ORDER);
+        order.setOrderDate(LocalDateTime.now());
+        return order;
+    }
+
+    // 비즈니스 로직
+
+    // 주문 취소
+    public void cancel() {
+        if (delivery.getStatus() == DeliveryStatus.COMP) // DeliveryStatus.COMP: 배송완료
+            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+    }
+    this.setStatus(OrderStatus.CANCEL);
+    for (OrderItem orderItem : orderItems) {
+        orderItem.cancel(); // order 취소시 주문한 모든 아이템 주문 취소
+    }
+
 }
