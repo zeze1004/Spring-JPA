@@ -54,15 +54,51 @@
        private List<Order> orders = new ArrayList<>(); // 컬렉션 선언하고 수정x
    ```
 
+
+
+4. 연관관계 메서드
+
+   **추가 설명 삽입 요망!**
+
+   **`Order` 연관관계 메서드 코드**
+
+   ```java
+      // 연관관계 메서드
+       // Order랑 연관관계인 3가지 엔티티들을 외래 키와 매핑
+       public void setMember(Member member) {
+           this.member = member;
+           member.getOrders().add(this);
+       }
+   
+       public void addOrderItem(OrderItem orderItem) {
+           orderItems.add(orderItem);
+           orderItem.setOrder(this);
+       }
+   
+       public void setDelivery(Delivery delivery) {
+           this.delivery = delivery;
+           delivery.setOrder(this);
+       }
+   ```
+
    
 
+> `Cascade` 사용법
+
+​	`Order` 하나에 `OrderItem` 은 여러 개 매핑 가능
+
+​	`Cascade`를 하면 `Order`에 연관된 `OrderItem`을 한 번에 매핑할 수 있고 `Order` 삭제 시 한 번에 여러 `OrderItem` 삭제 가능
+
+	##### Cascade 예제
+
+```java
+@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+private List<OrderItem> orderItems = new ArrayList<>();
+```
 
 
 
-
-
-
-
+> 데이터를 가지고 있는 쪽이 비즈니스 로직을 가지고 있어야 응집력이 있음
 
 
 
