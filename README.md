@@ -1,5 +1,5 @@
 # 개발 정리 노트
-----
+
 
 ##### 홈 화면
 ![home_view](https://user-images.githubusercontent.com/44468282/112165188-dcc33980-8c31-11eb-8f05-d625dad928a7.png)
