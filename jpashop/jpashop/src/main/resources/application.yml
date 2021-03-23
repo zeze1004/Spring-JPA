@@ -12,6 +12,9 @@ spring:
       hibernate:
         show_sql: true
         format_sal: true
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
 
 logging:
   level:

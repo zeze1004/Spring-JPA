@@ -245,7 +245,11 @@ private List<OrderItem> orderItems = new ArrayList<>();
 
 
 
+### 홈 화면 만들기
 
+- 타임리프, 부트스트랩 사용
+
+  ![home_view](C:\Project\Spring-JPA\HOME_VIEW.png)
 
 
 
