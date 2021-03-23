@@ -249,7 +249,7 @@ private List<OrderItem> orderItems = new ArrayList<>();
 
 - 타임리프, 부트스트랩 사용
 
-  ![home_view](C:\Project\Spring-JPA\HOME_VIEW.png)
+  ![home_view](https://user-images.githubusercontent.com/44468282/112165188-dcc33980-8c31-11eb-8f05-d625dad928a7.png)
 
 
 
