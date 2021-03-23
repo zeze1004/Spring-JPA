@@ -33,14 +33,4 @@ public class ItemService {
         return itemRepository.findOne(itemId);
     }
 
-    // 조회 로직
-
-    // 전체 주문 가격 조회
-    public int getTotalPrice() {
-        int totalPrice = 0;
-        for (OrderItem orderItem : orderItems) {
-            totalPrice += orderItem.getTotalPrice();
-        }
-        return totalPrice;
-    }
 }

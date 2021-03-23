@@ -1,6 +1,6 @@
 package jpabook.jpashop.domain.exception;
 
-public class NotEnoughStcckException extends RuntimeException {
+public class NotEnoughStockException extends RuntimeException {
     public NotEnoughStockException() {
     }
     public NotEnoughStockException(String message) {

@@ -116,5 +116,16 @@ private List<OrderItem> orderItems = new ArrayList<>();
 
 ### 주문 도메인 개발
 
+##### 테스트코드 템플릿
 
+```java
+    @Test
+    public void 테스트이름() throws Exception {
+        // given
+
+        // when
+
+        // then
+    }
+```
 

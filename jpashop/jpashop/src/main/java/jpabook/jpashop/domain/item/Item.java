@@ -1,7 +1,7 @@
 package jpabook.jpashop.domain.item;
 
 import jpabook.jpashop.domain.category.Category;
-import jpabook.jpashop.domain.exception.NotEnoughStcckException;
+import jpabook.jpashop.domain.exception.NotEnoughStockException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +39,7 @@ public abstract class Item {
         int restStock = this.stockQuantity - quantity;
         // 0보다 크면 예외처리 발생 시키는 로직
         if (restStock < 0) {
-            throw new NotEnoughStcckException("need more stock");
+            throw new NotEnoughStockException("need more stock");
         }
         this.stockQuantity = restStock;
     }

@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
     @Id @GeneratedValue
     @Column(name = "order_id")
@@ -27,7 +26,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -75,12 +74,22 @@ public class Order {
 
     // 주문 취소
     public void cancel() {
-        if (delivery.getStatus() == DeliveryStatus.COMP) // DeliveryStatus.COMP: 배송완료
+        if (delivery.getStatus() == DeliveryStatus.COMP) { // DeliveryStatus.COMP: 배송완료
             throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
     }
-    this.setStatus(OrderStatus.CANCEL);
-    for (OrderItem orderItem : orderItems) {
-        orderItem.cancel(); // order 취소시 주문한 모든 아이템 주문 취소
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel(); // order 취소시 주문한 모든 아이템 주문 취소
+        }
+    }
+    // 조회 로직
+    // 전체 주문 가격 조회
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
     }
 
 }
