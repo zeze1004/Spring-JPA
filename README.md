@@ -136,3 +136,128 @@ private List<OrderItem> orderItems = new ArrayList<>();
 > `No runnalble methods`
 >
 > `import org.junit.Test;` 로 import 되었는지 꼭 확인!
+
+
+
+### 주문 검색 개발
+
+- JPA에서 동적 쿼리 사용해보자
+
+
+
+```java
+// OrderRepository
+	public List<Order> findAll(OrderSearch orderSearch) {
+        // 주문 검색하고 주문과 멤버와 join
+        return em.createQuery("select o from Order o join o.member m" +
+                " where o.status = : status" +
+                " and m.name like :name", Order.class)
+                // 바인딩
+                .setParameter("status", orderSearch.getOrderStatus())
+                .setParameter("name", orderSearch.getMemberName())
+                .setMaxResults(1000) // 결과 최대 1000개까지 보여주기
+                .getResultList();
+```
+
+위처럼 작성하면 Order가 null일 경우 Order.status가 없으므로 제대로 동작 되지 x
+
+
+
+##### 어떻게 해결할까😥
+
+1. JPA 쿼리로 해결
+
+   ```java
+       public List<Order> findAllByString(OrderSearch orderSearch) {
+           // language=JPAQL
+           String jpql = "select o From Order o join o.member m";
+           boolean isFirstCondition = true;
+           //주문 상태 검색
+           if (orderSearch.getOrderStatus() != null) {
+               if (isFirstCondition) {
+                   jpql += " where";
+                   isFirstCondition = false;
+               } else {
+                   jpql += " and";
+               }
+               jpql += " o.status = :status";
+           }
+           //회원 이름 검색
+           if (StringUtils.hasText(orderSearch.getMemberName())) {
+               if (isFirstCondition) {
+                   jpql += " where";
+                   isFirstCondition = false;
+               } else {
+                   jpql += " and";
+               }
+               jpql += " m.name like :name";
+           }
+           TypedQuery<Order> query = em.createQuery(jpql, Order.class)
+                   .setMaxResults(1000); //최대 1000건
+           if (orderSearch.getOrderStatus() != null) {
+               query = query.setParameter("status", orderSearch.getOrderStatus());
+           }
+           if (StringUtils.hasText(orderSearch.getMemberName())) {
+               query = query.setParameter("name", orderSearch.getMemberName());
+           }
+           return query.getResultList();
+       }
+   ```
+
+   => 💖이렇게 쓰지말자💖
+
+2. **JPA Criteria**: JPA가 제공해주는 동적쿼리 빌드해주는 기능
+
+   ```java
+   // JPA Criteria: JPA가 제공해주는 동적쿼리 빌드해주는 기능
+       public List<Order> findAllByCriteria(OrderSearch orderSearch) {
+           CriteriaBuilder cb = em.getCriteriaBuilder();
+           CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+           Root<Order> o = cq.from(Order.class);
+           Join<Order, Member> m = o.join("member", JoinType.INNER); //회원과 조인
+           List<Predicate> criteria = new ArrayList<>();
+           //주문 상태 검색
+           if (orderSearch.getOrderStatus() != null) {
+               Predicate status = cb.equal(o.get("status"),
+                       orderSearch.getOrderStatus());
+               criteria.add(status);
+           }
+           //회원 이름 검색
+           if (StringUtils.hasText(orderSearch.getMemberName())) {
+               Predicate name =
+                       cb.like(m.<String>get("name"), "%" +
+                               orderSearch.getMemberName() + "%");
+               criteria.add(name);
+           }
+           cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
+           TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대 1000개
+           return query.getResultList();
+       }
+   ```
+
+   - JPA Criteria는 코드를 한 눈에 이해하기 힘들어서 유지보수하기 힘듦
+
+      => 동적 쿼리는 무족권 🍓`Querydsl`🍓를 사용함
+
+     ​		(추후 Querydsl 코드 추가 필요)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
