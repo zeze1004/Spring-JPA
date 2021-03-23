@@ -129,3 +129,10 @@ private List<OrderItem> orderItems = new ArrayList<>();
     }
 ```
 
+
+
+> ##### 테스트 코드 오류
+>
+> `No runnalble methods`
+>
+> `import org.junit.Test;` 로 import 되었는지 꼭 확인!
