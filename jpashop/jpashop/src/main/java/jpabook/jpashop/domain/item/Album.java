@@ -7,7 +7,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("A")
+@DiscriminatorValue("ALBUM")
 @Getter
 @Setter
 public class Album extends Item {
