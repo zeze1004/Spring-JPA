@@ -249,15 +249,74 @@ private List<OrderItem> orderItems = new ArrayList<>();
 
 
 
-### 홈 화면 만들기
+### 화면 만들기
 
 - 타임리프, 부트스트랩 사용
 
 
 
+### 회원가입
+
+### ![MEMBER_SIGNUP](C:\Project\Spring-JPA\images\MEMBER_SIGNUP.png)
+
+- 이름 작성을 필수로 받을거임
+
+- 작성 안 했을 시 submit 버튼 작동 안 하게 구현
+
+  - `BindingResult result`
+
+    : 에러 발생해도 에러 결과를 가진 채 코드 실행
+
+    - 기존에 작성된 이름 외의 form에 작성된 text들은 `MemberForm form`에 담겨있어 값이 바뀌지 않음
+
+  ```java
+      @PostMapping("/members/new")
+      public String create(@Valid MemberForm form, BindingResult result) {    // 에러가 있어도 BindingResult가 에러 결과를 갖고 아래 코드 동작
+  
+          // 에러 발생 시 페이지 넘어가지 않게 하기
+          if (result.hasErrors()) {
+              return "members/createMemberForm";
+          }
+  
+          Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
+  
+          Member member = new Member();
+          member.setName(form.getName());
+          member.setAddress(address);
+  
+          memberService.join(member);
+          return "redirect:/"; // 회원가입 폼 작성 완료시 홈으로 이동
+      }
+  ```
+
+  
 
 
 
+### 회원 목록 조회
+
+
+
+![MEMBER_LIST](C:\Project\Spring-JPA\images\MEMBER_LIST.png)
+
+- 홈 화면의 회원 목록 버튼 누르면 `memberList.html` 띄워줌
+
+  ```java
+  @GetMapping("/members")
+      public String list(Model model) {   // Model이란 객체를 통해 화면에 데이터 전달
+          
+          // model.addAttribute("members",memberService.findMember()); 아래 두 코드를 합친 것
+          List<Member> members = memberService.findMember();
+          model.addAttribute("members", members);
+          return "members/memberList";
+      }
+  ```
+
+  - `ctrl + alt + n`: 여러 줄에 중복되는 변수를 짧게 줄일 수 있음
+
+    
+
+    
 
 
 
