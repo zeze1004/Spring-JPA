@@ -314,16 +314,118 @@ private List<OrderItem> orderItems = new ArrayList<>();
 
   - `ctrl + alt + n`: 여러 줄에 중복되는 변수를 짧게 줄일 수 있음
 
-    
-
-    
 
 
 
 
+### 상품 등록
+
+- 회원가입과 유사
+
+
+
+### 상품 목록
+
+- 회원목록과 유사
+
+
+
+### 상품 수정⭐⭐⭐
+
+- 매우 매우 중요!!!
 
 
 
 
 
+### 변경 감지와 병합(merge)
 
+
+
+- **준영속 엔티티란?**
+
+  영속성 컨텍스트가 더는 관리하지 않는 엔티티를 뜻함
+
+  > DB에 한 번 저장되면 객차는 식별자가 생긴다
+>
+  > **상품 수정**에서 Book 객체는 이미 DB에 저장되어 있어서 식별자가 존재
+>
+  > 그러나 JPA에가 더는 관리하지 X
+
+- 반면, JPA가 관리하는 영속상태의 엔티티는 변경감지가 일어남
+
+  트랜잭션 발생 시 변경 감지 기능(**Dirty Checking**)
+
+  
+
+##### 그렇다면 준영속 엔티티를 어떻게 수정해야 할까?
+
+- 준영속 엔티티를 수정하는 2가지 방법
+
+  1. 변경 감지 기능(Dirty Checking) 사용
+
+     ```java
+     // ItemService    
+     	@Transactional
+         public void updateItem(Long itemId, Book Param) {
+             Item findItem = itemRepository.findOne(itemId);
+             findItem.setPrice(Param.getPrice());
+             findItem.setName(Param.getName());
+             findItem.setStockQuantity(Param.getStockQuantity());
+         }
+     ```
+
+     - 영속성 컨텍스트로 엔티티를 다시 불러 들여 조회
+
+     - 트랜잭션 안에서 엔티티 조회하고 변경할 값을 선택하므로
+
+       트랜잭션 커밋 시점에서 변경 감지
+
+     - 바뀐 값으로 DB에 업데이트
+
+  2. 병합(merge) 사용
+
+     병합은 준영속 상태의 엔티티를 영속 상태를 영속 상태로 변경할 때 사용하는 기능
+
+     ```java
+     	@Transactional
+     	void update(Item itemParam) { 
+             //itemParam: 파리미터로 넘어온 준영속 상태의 엔티티
+     		Item mergeItem = em.merge(item);
+     	}
+     ```
+
+     1.의 코드와 같은 코드
+
+     병합이 자동으로 넘어온 매개변수와 같은 **엔티티를 찾아서** 영속 상태로 변경한 후
+
+     변경된 값 DB로 업데이트
+
+     
+
+     ​	**엔티티 찾는 과정**
+
+     ​	1) 엔티티를 찾을 때 먼저 영속성 컨텍스트(1차 캐시)에서 찾고
+
+     ​		없을 시 DB에서 찾음
+
+     ​	2) 찾은 엔티티를 준영속상태에서 영속 상태로 변경
+
+     > **병합 사용시 주의점**
+     >
+     > 병합은 엔티티의 모든 속성이 변경됨
+     >
+     > 변경될 값이 없으면 null로 업데이트 할 수도 있음
+     >
+     > 반면, 변경 감지 기능은 원하는 속성만 선택해서 업데이트 가능
+
+  
+
+  #### 그래서 엔티티 변경할 때는 어떻게 해야할까?
+
+  - merge는 최대한 쓰지 말자!
+  - 변경 감지 기능을 사용할 것!
+
+  
+
+  
