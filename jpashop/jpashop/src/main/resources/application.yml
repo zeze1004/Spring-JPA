@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none # create는 실행할 때마다 테이블 드랍&생성
+      ddl-auto: create # create는 실행할 때마다 테이블 드랍&생성
     properties:
       hibernate:
         show_sql: true
